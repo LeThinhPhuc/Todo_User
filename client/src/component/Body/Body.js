@@ -66,7 +66,7 @@ useEffect(()=>{
     const calculateDays = (endDate) => {
       // Chuyển đổi ngày tháng năm bắt đầu và kết thúc thành đối tượng Date
       const currentDate = new Date();
-      const currentDay = currentDate.getDate();
+      let currentDay = currentDate.getDate();
       const currentMonth = currentDate.getMonth() + 1; // Month là 0-indexed, cần cộng thêm 1
       const currentYear = currentDate.getFullYear();
       if (currentDay < 10) {
