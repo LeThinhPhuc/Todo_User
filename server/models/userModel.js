@@ -1,8 +1,10 @@
-import mongoose from "mongoose";
-import Task from "./taskModel";
+// import mongoose from "mongoose";
+const mongoose = require('mongoose');
+const Task = require('./taskModel');
+// import Task from "./taskModel";
 const userSchema=mongoose.Schema(
     {
-        userName:{
+        username:{
             type: String,
         },
         email:{

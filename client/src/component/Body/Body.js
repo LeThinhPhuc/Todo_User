@@ -5,18 +5,21 @@ import Item from '../Item/Item';
 import taskService from '../../services/taskService';
 import './Body.css';
 
+let tmpData = JSON.parse(localStorage.getItem("user"));
+
 const Body = () => {
   const [task,setTask]=useState();
   const [date,setDate]=useState();
   const [day,setDay]=useState();
-  const [tasks, setTasks] = useState();
+  const [tasks, setTasks] = useState([]);
   
 const fetchUser = async () => {
   try {
-    const userResponse = await taskService.getAll();
+    // console.log({email: tmpData.email, username: tmpData.username})
+    const userResponse = await taskService.getAll({email: tmpData.email, username: tmpData.username});
     // const userData = userResponse.newData;
-    console.log("User data:", userResponse.data.newData);
-    setTasks(userResponse.data.newData)
+    console.log("User data:", userResponse);
+    setTasks(userResponse.data)
   } catch (error) {
     console.log(error);
   }
@@ -28,6 +31,7 @@ const fetchUser = async () => {
 // }
 
 useEffect(()=>{
+  
   fetchUser();
   // logJSONData();
   // axios.get('http://localhost:4000/task')
@@ -52,7 +56,9 @@ useEffect(()=>{
     const handleAdd = async () =>{
       try{
         if(task&&date){
-          const newList= await taskService.postTask({name:task,leftDate:date})
+          // let tmpData = await JSON.parse(localStorage.getItem("user"));
+          // console.log({...tmpData, task:task, date:date})
+          const newList= await taskService.postTask({...tmpData,name:task,leftDate:date})
           console.log("newlist", newList.data.newData);
           setTasks(newList.data.newData);
           console.log("Tasks la :", typeof tasks)
@@ -96,9 +102,9 @@ useEffect(()=>{
     //   }
     // }
 
-    const newList= await taskService.DeleteById(t);
+    const newList= await taskService.DeleteById(t,  {email: tmpData.email, username: tmpData.username});
 
-  
+  console.log("delete :",newList.data.newData)
     setTasks(newList.data.newData);
    
     // localStorage.setItem("works", JSON.stringify(tasks))
@@ -112,10 +118,11 @@ useEffect(()=>{
     //   }
     //   return item;
     //  })
-      const tmpTask=await taskService.getById(i);
-      const newList = await taskService.UpdateById(i,{name:x,leftDate:y?y:tmpTask.leftDate});
-
-     setTasks(newList.data.newData);
+      const tmpTask=await taskService.getById(i, {email: tmpData.email, username: tmpData.username});
+      console.log("tmp update ne : ", tmpTask)
+      const newList = await taskService.UpdateById(i,{email:tmpData.email,name:x,leftDate:y?y:tmpTask.data.leftDate});
+console.log(newList.data);
+     setTasks(newList.data);
 
   };
     return (

@@ -2,7 +2,7 @@ import axios from "axios";
 // import http from "http";
 const Endpoint="http://localhost:4000"
 const taskService = {
-    getAll: () => axios.create({
+    getAll: (task) => axios.create({
         baseURL: 'http://localhost:4000',
         timeout: 5000,
         headers: {
@@ -10,18 +10,20 @@ const taskService = {
           "Access-Control-Allow-Headers": "*",
           Accept: "application/x-www-form-urlencoded, text/plain",
         },
-      }).get('/task'),
+      }).get(`/v1/task/${task.email}`),
       
 
-    getById: (id)=> axios.create({
+    getById: (id, task)=> axios.create({
         baseURL: 'http://localhost:4000/',
-        timeout: 5000,
+        timeout: 500000,
         headers: {
             "Content-Type": "application/json",
             "Access-Control-Allow-Headers": "*",
             Accept: "application/x-www-form-urlencoded, text/plain",
+            "Cache-Control": "no-cache", // Thêm tiêu đề Cache-Control: no-cache
+            Pragma: "no-cache" // Thêm tiêu đề Pragma: no-cache
         }
-    }).get(`/task/${id}`),
+    }).get(`/v1/task/${id}/${task.email}`),
 
     postTask: (task)=> axios.create({
         baseURL: 'http://localhost:4000/',
@@ -31,7 +33,7 @@ const taskService = {
             "Access-Control-Allow-Headers": "*",
             Accept: "application/x-www-form-urlencoded, text/plain",
         }
-    }).post(`/task`, task),
+    }).post(`/v1/task`, task),
 
     UpdateById: (id,user) => axios.create({
         baseURL: 'http://localhost:4000/',
@@ -40,10 +42,12 @@ const taskService = {
             "Content-Type": "application/json",
             "Access-Control-Allow-Headers": "*",
             Accept: "application/x-www-form-urlencoded, text/plain",
+            "Cache-Control": "no-cache", // Thêm tiêu đề Cache-Control: no-cache
+            Pragma: "no-cache" // Thêm tiêu đề Pragma: no-cache
         }
-    }).put(`/task/${id}`,user),
+    }).put(`/v1/task/${id}`,user),
 
-    DeleteById: (id) => axios.create({
+    DeleteById: (id, user) => axios.create({
         baseURL: 'http://localhost:4000/',
         timeout: 5000,
         headers: {
@@ -51,7 +55,7 @@ const taskService = {
             "Access-Control-Allow-Headers": "*",
             Accept: "application/x-www-form-urlencoded, text/plain",
         }
-    }).delete(`/task/${id}`),
+    }).delete(`/v1/task/${id}/${user.email}`),
 
 }
 
