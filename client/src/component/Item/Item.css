@@ -1,3 +1,26 @@
-button{
-    background-color: aqua;
+/* .button-task{
+    background-color: green;
+    padding:15px;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    color:gold;
+    border-radius: 10px;
+} */
+
+.input-edit{
+    height: 25px;
+    width:100%
+}
+@media (max-width: 1100px) {
+    .button-main{
+        flex-direction: column;
+    }
+  }
+  
+
+@media (max-width: 767px) {
+    .button-main{
+        flex-direction: column;
+    }
 }

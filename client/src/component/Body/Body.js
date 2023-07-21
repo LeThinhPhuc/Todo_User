@@ -11,15 +11,17 @@ const Body = () => {
   const [task,setTask]=useState();
   const [date,setDate]=useState();
   const [day,setDay]=useState();
+  const [page,setPage] = useState();
   const [tasks, setTasks] = useState([]);
-  
+  const [pageDa,setPageDa] = useState([]);
 const fetchUser = async () => {
   try {
     // console.log({email: tmpData.email, username: tmpData.username})
-    const userResponse = await taskService.getAll({email: tmpData.email, username: tmpData.username});
+    const userResponse = await taskService.getAll({email: tmpData.email, username: tmpData.username, page:page?page:1});
     // const userData = userResponse.newData;
     console.log("User data:", userResponse);
-    setTasks(userResponse.data)
+    setTasks(userResponse.data.allData)
+    setPageDa(userResponse.data.pageData)
   } catch (error) {
     console.log(error);
   }
@@ -42,7 +44,7 @@ useEffect(()=>{
   //   console.log(error);
   // });
 
-},[])
+},[page])
   // const handleAdd = ()=>{
   //   if(task&&date){
   //     // setTasks([...tasks,{id:uuid4(),name:task, leftDate:date}])
@@ -58,12 +60,18 @@ useEffect(()=>{
         if(task&&date){
           // let tmpData = await JSON.parse(localStorage.getItem("user"));
           // console.log({...tmpData, task:task, date:date})
-          const newList= await taskService.postTask({...tmpData,name:task,leftDate:date})
+        if(Number(date)<0){
+          alert("Date is wrong !")
+        }else{
+          const newList= await taskService.postTask({...tmpData,name:task,leftDate:date, page:page?page:1})
           console.log("newlist", newList.data.newData);
           setTasks(newList.data.newData);
+    setPageDa(newList.data.pageData)
+
           console.log("Tasks la :", typeof tasks)
           setTask("");
       setDay("")
+        }
         }
       }catch(error){
         console.log(error);
@@ -102,11 +110,13 @@ useEffect(()=>{
     //   }
     // }
 
-    const newList= await taskService.DeleteById(t,  {email: tmpData.email, username: tmpData.username});
-
-  console.log("delete :",newList.data.newData)
+    const newList= await taskService.DeleteById(t,  {email: tmpData.email, username: tmpData.username, page:page?page:1});
+// setPage(1)
+  // console.log("delete :",newList.data.newData)
     setTasks(newList.data.newData);
-   
+    // setPageDa(newList.data.pageData)
+    fetchUser();
+    // setPage(1)
     // localStorage.setItem("works", JSON.stringify(tasks))
 
   };
@@ -118,32 +128,79 @@ useEffect(()=>{
     //   }
     //   return item;
     //  })
-      const tmpTask=await taskService.getById(i, {email: tmpData.email, username: tmpData.username});
-      console.log("tmp update ne : ", tmpTask)
-      const newList = await taskService.UpdateById(i,{email:tmpData.email,name:x,leftDate:y?y:tmpTask.data.leftDate});
-console.log(newList.data);
-     setTasks(newList.data);
+    console.log(tmpData)
+      // const tmpTask=await taskService.getById(i, {email: tmpData.email, username: tmpData.username});
+      // console.log("tmp update ne : ", tmpTask)
+    let dateTmp
+      for(let z=0;z<pageDa.length;z++) {
+        if(pageDa[z]._id==i){
+          dateTmp=pageDa[z].leftDate
+        }
+      }
+      const newList = await taskService.UpdateById(i,{page:page?page:1, email:tmpData.email,name:x,leftDate:y?y:dateTmp});
+// console.log(newList.data);
+     setTasks(newList.data.newData);
+     setPageDa(newList.data.pageData)
 
   };
-    return (
-        <div>
-      <div style={{justifyContent:"space-between",alignItems:"center", position: 'relative', marginTop:"20px",display:"flex" }}>
-        <label>Your task</label>
-        <input value={task} type="text" onChange={(e)=>{setTask(e.target.value); console.log(task)}}/>
-      <input onChange={(e)=>{setDay(e.target.value);setDate(calculateDays(e.target.value)); console.log(date)}} value={day} type="date" />
-      </div>
-      <div style={{margin:"0 auto",display:'flex', justifyContent:"space-around", width:"40%", marginTop:"20px"}}>
-      <button onClick={handleAdd}>ADD</button>
-      </div>
 
-      {
-  Array.isArray(tasks) &&
-  tasks.map((item) => {
-    return <Item cal={calculateDays} key={item._id} name={item.name} id={item._id} leftDate={item.leftDate} edit={handleEdit} delete={handleDelete} />;
-  })
+
+
+
+
+let n = tasks.length;
+let num
+let arr=[]
+if(n%3===0){
+  
+  if(n===0){
+    num=0
+  }else{
+    num=n/3
+    console.log("so trang :",num)
+
+  }
+}else{
+  if(n<3){
+    num=1
+    console.log("so trang :",num)
+
+  }else{
+    num=Math.floor(n/3)+1;
+  }
+
 }
 
+for(let i=1;i<=num;i++){
+  arr.push(i);
+}
+    return (
+        <div>
+      <div className='main' style={{justifyContent:"space-between",alignItems:"center", position: 'relative', marginTop:"20px",display:"flex" }}>
+        <label>Your task</label>
+        <input className='main-input' value={task} type="text" onChange={(e)=>{setTask(e.target.value); console.log(task)}}/>
+      <button className='button-add' onClick={handleAdd}>ADD</button>
+      <input className='main-input' onChange={(e)=>{setDay(e.target.value);setDate(calculateDays(e.target.value)); console.log(date)}} value={day} type="date" />
+      </div>
+      
 
+      {
+  Array.isArray(pageDa) &&
+  pageDa.map((item) => {
+    return <Item cal={calculateDays} key={item._id} name={item.name} id={item._id} leftDate={item.leftDate} edit={handleEdit} delete={handleDelete} />;
+  })
+
+}
+<div style={{padding:"10px"}}></div>
+{/* <div dangerouslySetInnerHTML={{ __html: slideNumber() }} /> */}
+
+
+  {
+    arr.map((item)=>{
+      return <span onClick={()=>{setPage(item); console.log("page ne : ", page)}} style={{padding:"10px"}}>{item}</span>
+    })
+  }
+    
       </div>
     );
   };  

@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import { useNavigate } from "react-router-dom";
 import authService from "../../services/authService";
+import './Login.css'
 const Login=()=>{
     const navigate=useNavigate()
     const [email,setEmail] = useState();
@@ -21,21 +22,22 @@ const Login=()=>{
         }
     }
     return(
-        <div >
+        <div style={{alignItems:"center", justifyContent:"center", display:"flex", flexDirection:"column"}}>
             <h1>LOGIN</h1>
 
-            <div style={{position: 'relative', marginTop:"40px" }}>
-        <label>Email</label>
-        <input onChange={(e)=>setEmail(e.target.value)} type="text"></input>
+            <div style={{justifyContent:"space-between",alignItems:"center", position: 'relative', marginTop:"20px",display:"flex" }}>
+  <label >Email</label>
+  <input onChange={(e) => setEmail(e.target.value)} type="text"  />
+</div>
 
-      </div>
-      <div style={{ position: 'relative', marginTop:"40px" }}>
+
+      <div style={{justifyContent:"space-between",alignItems:"center", position: 'relative', marginTop:"20px",display:"flex" }}>
         <label>Password</label>
         <input onChange={(e)=>setPassword(e.target.value)} type="password"></input>
 
 
       </div>
-      <button style={{padding:"10px", marginTop:"15px"}} onClick={handleAddLogin}>Login</button> <buton style={{color:"red", marginLeft:"10px"}} onClick={()=> navigate("/register")}>Register</buton>
+      <button style={{padding:"10px", marginTop:"15px", marginBottom:"15px"}} onClick={handleAddLogin}>Login</button> <buton style={{color:"red"}} onClick={()=> navigate("/register")}>Register</buton>
 
         </div>
     )

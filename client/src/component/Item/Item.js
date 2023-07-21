@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import './Item.css'
 const Item = (props) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTask, setEditedTask] = useState(props.name);
@@ -23,7 +23,7 @@ const Item = (props) => {
     <div style={{ display: "flex", justifyContent: "space-between", marginTop: "25px", padding: "15px", backgroundColor: "gray", borderRadius: "10px" }}>
   <div style={{ display: "flex", flexDirection: "column" }}>
     {isEditing ? (
-      <input style={{ height: "2px", fontSize: "15px", marginBottom: "5px" }} type="text" value={editedTask} onChange={handleInputChange} />
+      <input className="input-edit" style={{marginBottom:"10px"}} type="text" value={editedTask} onChange={handleInputChange} />
     ) : (
       <div style={{ fontWeight: "bold", color: "gold", marginBottom: "5px" }}>{props.name}</div>
     )}
@@ -31,14 +31,14 @@ const Item = (props) => {
     <div style={{ display: "flex", alignItems: "center" }}>
     {isEditing ?"":<div style={{ marginRight: "10px" }}>Date left:</div>}
       {isEditing ? (
-        <input style={{ height: "2px", fontSize: "15px" }} type="date" onChange={(e) => { setEditDate(props.cal(e.target.value)); console.log(editDate) }} />
+        <input className="input-edit"  type="date" onChange={(e) => { setEditDate(props.cal(e.target.value)); console.log(editDate) }} />
       ) : (
         <div style={{ fontWeight: "bold", color: "gold" }}>{props.leftDate}</div>
       )}
     </div>
   </div>
 
-  <div style={{ width: "20%", display: "flex", justifyContent: "space-around" }}>
+  <div className="button-main" style={{ width: "20%", display: "flex", justifyContent: "space-around" }}>
     {isEditing ? (
       <button style={{ padding: "8px", fontSize: "15px", borderRadius: "5px" }} onClick={handleSave}>Save</button>
     ) : (

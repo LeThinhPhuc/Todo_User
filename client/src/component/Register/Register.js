@@ -28,7 +28,7 @@ const Register=()=>{
        
     }
     return(
-        <div>
+        <div style={{alignItems:"center", justifyContent:"center", display:"flex", flexDirection:"column"}}>
             <h1>REGISTER</h1>
            
             <div style={{position: 'relative', marginTop:"40px" }}>
@@ -48,8 +48,8 @@ const Register=()=>{
         <input value={password} onChange={(e)=>setPassword(e.target.value)} type="password"></input>
 
       </div> 
-            <button style={{marginTop:"20px", padding:"10px"}} onClick={handleAddRegister}>Register</button>
-            <buton style={{color:"red", marginLeft:"20px"}} onClick={()=> navigate("/")}>Login</buton>
+            <button style={{marginTop:"15px", marginBottom:"15px", padding:"10px"}} onClick={handleAddRegister}>Register</button>
+            <buton style={{color:"red"}} onClick={()=> navigate("/")}>Login</buton>
             <h1>{note}</h1>
         </div>
     )

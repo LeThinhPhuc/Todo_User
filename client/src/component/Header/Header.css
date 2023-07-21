@@ -1,0 +1,33 @@
+/* CSS cho màn hình lớn (desktop) */
+.header-container {
+    color: green;
+    font-weight: bold;
+    font-size: 40px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  
+  
+  /* CSS cho màn hình nhỏ (tablet và mobile) */
+  @media (max-width: 767px) {
+    .header-container {
+      align-items: center; /* Căn giữa nội dung dọc */
+      
+      font-size: 20px;
+    }
+  
+    .title {
+      margin-bottom: 10px; /* Tăng khoảng cách giữa nút và chữ trên di động */
+    }
+  
+    .logout-button {
+       /* Chiếm hết chiều rộng của phần tử cha (header-container) */
+      margin-top: 8px;
+      padding: 10px;
+      border-bottom-right-radius: 70%;
+      border-top-right-radius: 70%;
+      /* Thêm các thuộc tính CSS khác mà bạn muốn áp dụng trên di động ở đây */
+    }
+  }
+  

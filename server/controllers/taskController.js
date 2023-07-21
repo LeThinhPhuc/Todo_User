@@ -3,34 +3,46 @@ const User=require('../models/userModel');
 // const { LocalStorage } = require('node-localstorage');
 // const localStorage = new LocalStorage('./scratch');
 const taskController = {
-    getAll: async (req,res)=>{
-        // try{
-        //     const user=await User.findOne(req.body.username);
-            
-        //      res.status(200).json(user.todos);
-        // } catch(e){
-        //     res.status(500).json(e);
-        // }
-        try {
-            console.log(req.params.email);
-            const email= req.params.email;
-            const user = await User.findOne({email: email}).populate('todos');
-            console.log(user.todos);
-            res.status(200).json(user.todos);
-          } catch (e) {
-            res.status(500).json(e);
-          }
-    },
+  getAll: async (req, res) => {
+    try {
+        console.log(req.params.email);
+        const email = req.params.email;
+        const page = req.params.page;
+        const user = await User.findOne({ email: email }).populate('todos');
+        console.log(page);
+
+        // Tính toán chỉ số bắt đầu và kết thúc của task trên trang được yêu cầu
+        const startIndex = (Number(page) - 1) * 3;
+        const endIndex = startIndex + 3;
+
+        // Lấy tối đa 3 task tương ứng với page đó
+
+        // SUA UPDATEDUSER THANH user
+        const pageData = user.todos.slice(startIndex, endIndex);
+
+        res.status(200).json({
+            allData: user.todos,
+            pageData: pageData
+        });
+    } catch (e) {
+        res.status(500).json(e);
+    }
+}
+,
     getById: async (req, res) => {
         const taskId = req.params.id; // Lấy ID công việc từ URL
-    
+      console.log("id get ne : ", taskId);
         try {
-            const email= req.params.email;
 
+
+          
+            const email= req.params.email;
+          console.log("taskIdGet va emailGet ne: ", taskId, email);
           const user =await User.findOne({email:email}).populate('todos');
 
-          const index = user.todos.findIndex((item)=>item._id.toString()===taskId)
+          const index =  user.todos.findIndex((item)=>item._id.toString()===taskId)
           if(index!==-1){
+            
             console.log("user index ne :",user.todos[index])
             return res.json(user.todos[index])
           }
@@ -64,7 +76,7 @@ const taskController = {
                 console.log('Request timeout');
               } else {
                 // Xử lý các lỗi khác
-                console.error(error);
+                console.error("lỗi nè", error);
               }
         }
       },
@@ -81,6 +93,7 @@ const taskController = {
                 //     newData: newDataJob,
             // })
                 const task=new Task({name:req.body.name, leftDate:req.body.leftDate});
+                const page= req.params.page;
 
                 await task.save();
                 const user =await User.findOne({email:req.body.email}).populate('todos');;
@@ -91,10 +104,11 @@ const taskController = {
                 await user.save();
 
                 const newDataTask = await Task.find()
-
+              
                 res.json({
                     message:"Success Add Task",
                     newData: user.todos,
+                    pageData:  user.todos.slice((Number(page)-1)*4, (Number(page)*4)-1)
                 })
             }catch (e) {
                 res.status(500).json(e)
@@ -170,6 +184,7 @@ const taskController = {
           const user = await User.findOne({ email: req.body.email }).populate('todos');
       
           const index = user.todos.findIndex((item) => item._id.toString() === id);
+          const page= req.params.page;
       
           if (index !== -1) {
             user.todos[index].name = req.body.name;
@@ -177,7 +192,11 @@ const taskController = {
             await user.save();
             await Task.findByIdAndUpdate(id,{name:req.body.name, leftDate:req.body.leftDate})
             // console.log("update ne : ",user)
-            return res.json(user.todos);
+            res.json({
+              message:"Success Updated Task",
+              newData: user.todos,
+              pageData:  user.todos.slice((Number(page)-1)*4, (Number(page)*4)-1)
+          })
           } else {
             return res.status(404).json({ message: "Task not found" });
           }
@@ -191,6 +210,7 @@ const taskController = {
         try {
           const id = req.params.id;
           const email = req.params.email;
+          // const page= req.params.page;
       
           const user = await User.findOne({ email });
       
@@ -209,6 +229,8 @@ const taskController = {
             res.json({
               message: "Success Delete Task",
               newData: updatedUser.todos,
+              // pageData:  user.todos.slice((Number(page)-1)*4, (Number(page)*4)-1)
+
             });
           } else {
             return res.status(404).json({ message: "Unauthorized access to task" });
